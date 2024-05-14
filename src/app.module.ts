@@ -18,18 +18,18 @@ import {CartItem} from './cart/entities/cartItem.entity'
 const certificatePath = path.resolve(__dirname, "./certificate/us-east-1-bundle.pem");
 const ormConfig: TypeOrmModuleOptions = {
   type: 'postgres',
-  host: process.env['POSTGRES_HOST'],
-  port: parseInt(process.env['POSTGRES_PORT']),
-  username: process.env['POSTGRES_USER'],
-  password: process.env['POSTGRES_PASSWORD'],
-  database: process.env['POSTGRES_DATABASE'],
+  host: process.env.POSTGRES_HOST,
+  port: parseInt(process.env.POSTGRES_PORT),
+  username: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DATABASE,
   entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
   ssl: {
     ca: fs.readFileSync(certificatePath).toString(),
     rejectUnauthorized: true
   },
 };
-console.log(ormConfig)
+console.log('config',ormConfig)
 @Module({
   imports: [
     AuthModule,
