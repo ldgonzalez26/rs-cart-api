@@ -1,21 +1,34 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { NestFactory } from '@nestjs/core';
-
-import * as helmet from 'helmet';
-
+import serverlessExpress from '@codegenie/serverless-express';
+import { Callback, Context, Handler } from 'aws-lambda';
 import { AppModule } from './app.module';
 
-const port = process.env.PORT || 4000;
+let server: Handler;
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+async function bootstrap(): Promise<Handler> {
+  try {
+    console.log("Initializing NestJS application... LUIS");
+    const app = await NestFactory.create(AppModule);
+    await app.init();
+    console.log("NestJS application initialized.");
 
-  app.enableCors({
-    origin: (req, callback) => callback(null, true),
-  });
-  app.use(helmet());
-
-  await app.listen(port);
+    const expressApp = app.getHttpAdapter().getInstance();
+    console.log("Serverless express setup complete.");
+    return serverlessExpress({ app: expressApp });
+  } catch (error) {
+    console.error("Error during NestJS application initialization:", error);
+    throw error;  // Re-throw the error after logging it
+  }
 }
-bootstrap().then(() => {
-  console.log('App is running on %s port', port);
-});
+
+export const handler: Handler = async (
+  event: any,
+  context: Context,
+  callback: Callback,
+) => {
+  server = server ?? (await bootstrap());
+  return server(event, context, callback);
+};
