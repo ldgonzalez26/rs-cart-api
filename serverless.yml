@@ -1,0 +1,41 @@
+service: cart-serverless
+
+useDotenv: true
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: dev
+  region: us-east-1
+  profile: serverlessUser
+  vpc:
+    securityGroupIds:
+      - sg-032d5e111c2001c10
+    subnetIds:
+      - subnet-0c94583911cfb4b51
+      - subnet-0e5a06f2feca9785b
+      - subnet-0aa5a0bbd441e1095
+      - subnet-064446a5489a38a48
+      - subnet-05b8f1b6bffaf0ee7
+      - subnet-08169c25d3f0cc1cd
+  environment:
+    HOST: ${env:POSTGRES_HOST}
+    USER: ${env:POSTGRES_PORT}
+    PASSWORD: ${env:POSTGRES_USER}
+    PORT: ${env:POSTGRES_PASSWORD}
+    DATABASE: ${env:POSTGRES_DATABASE}
+
+functions:
+  main:
+    handler: dist/main.handler
+    timeout: 60
+    events:
+      - http:
+          method: ANY
+          path: /
+      - http:
+          method: ANY
+          path: '{proxy+}'
