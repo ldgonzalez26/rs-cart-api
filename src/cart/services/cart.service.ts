@@ -27,12 +27,16 @@ export class CartService {
   }
 
   async createByUserId(userId: string): Promise<Cart> {
+    console.log('id', v4())
     const newCart = this.cartRepository.create({
+      id: v4(),
       userId: userId,
-      items: [],  // no items on initialization 
-      status: Status.OPEN  // default status as open
+      items: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      status: Status.OPEN 
     });
-
+    console.log('creating new cart', newCart);
     await this.cartRepository.save(newCart);
 
     return newCart;

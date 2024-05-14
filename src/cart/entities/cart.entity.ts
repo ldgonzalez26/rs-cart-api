@@ -8,8 +8,8 @@ export enum Status {
 
 @Entity({name: 'carts'})
 export class Cart {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @CreateDateColumn({name: 'created_at'})
     createdAt: Date;
